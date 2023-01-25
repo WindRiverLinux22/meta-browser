@@ -1,10 +1,11 @@
-From be33177c1ef0a856453065e300ecef067cadc576 Mon Sep 17 00:00:00 2001
+From 5f8c7d6fae3acd2aeb36ff982a83f3f7090596b7 Mon Sep 17 00:00:00 2001
 From: Khem Raj <raj.khem@gmail.com>
 Date: Fri, 19 Mar 2021 20:16:00 -0700
 Subject: [PATCH] Fix tab crashes on musl
 
 Upstream-Status: Inappropriate [musl-specific]
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
+
 ---
  .../syscall_parameters_restrictions.cc        | 22 +++++--------------
  .../linux/seccomp-bpf-helpers/syscall_sets.cc |  5 +++--
@@ -14,11 +15,10 @@ Signed-off-by: Khem Raj <raj.khem@gmail.com>
  .../system_headers/mips64_linux_syscalls.h    |  4 ++++
  .../system_headers/mips_linux_syscalls.h      |  4 ++++
  .../system_headers/x86_64_linux_syscalls.h    |  4 ++++
- .../policy/linux/bpf_renderer_policy_linux.cc |  4 ++--
- 9 files changed, 32 insertions(+), 20 deletions(-)
+ 8 files changed, 30 insertions(+), 18 deletions(-)
 
 diff --git a/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc b/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
-index 7feff3f493..db2b5e90d4 100644
+index 2500a56acd..a5cf928bde 100644
 --- a/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
 +++ b/sandbox/linux/seccomp-bpf-helpers/syscall_parameters_restrictions.cc
 @@ -133,21 +133,11 @@ namespace sandbox {
@@ -58,7 +58,7 @@ index 7feff3f493..db2b5e90d4 100644
        .Else(CrashSIGSYSClone());
  }
 diff --git a/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc b/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
-index b3cf6fc7e8..87ecedc9a4 100644
+index 21087322e4..b48ffc1e13 100644
 --- a/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
 +++ b/sandbox/linux/seccomp-bpf-helpers/syscall_sets.cc
 @@ -423,6 +423,7 @@ bool SyscallSets::IsAllowedProcessStartOrDeath(int sysno) {
@@ -95,7 +95,7 @@ index b3cf6fc7e8..87ecedc9a4 100644
      case __NR_munlockall:
      case __NR_readahead:
 diff --git a/sandbox/linux/system_headers/arm64_linux_syscalls.h b/sandbox/linux/system_headers/arm64_linux_syscalls.h
-index ab86b36353..60d87434f1 100644
+index 03d28567a3..5715a69bc4 100644
 --- a/sandbox/linux/system_headers/arm64_linux_syscalls.h
 +++ b/sandbox/linux/system_headers/arm64_linux_syscalls.h
 @@ -1215,4 +1215,8 @@
@@ -108,7 +108,7 @@ index ab86b36353..60d87434f1 100644
 +
  #endif  // SANDBOX_LINUX_SYSTEM_HEADERS_ARM64_LINUX_SYSCALLS_H_
 diff --git a/sandbox/linux/system_headers/arm_linux_syscalls.h b/sandbox/linux/system_headers/arm_linux_syscalls.h
-index 9c44368a8e..40c61863e7 100644
+index bb1335e6d2..7e8150820a 100644
 --- a/sandbox/linux/system_headers/arm_linux_syscalls.h
 +++ b/sandbox/linux/system_headers/arm_linux_syscalls.h
 @@ -1617,6 +1617,10 @@
@@ -123,7 +123,7 @@ index 9c44368a8e..40c61863e7 100644
  #if !defined(__ARM_NR_BASE)
  #define __ARM_NR_BASE (__NR_SYSCALL_BASE + 0xF0000)
 diff --git a/sandbox/linux/system_headers/linux_syscalls.h b/sandbox/linux/system_headers/linux_syscalls.h
-index 2b78a0cc3b..b6fedb5c20 100644
+index 438147b401..6b67cbcedc 100644
 --- a/sandbox/linux/system_headers/linux_syscalls.h
 +++ b/sandbox/linux/system_headers/linux_syscalls.h
 @@ -10,6 +10,7 @@
@@ -135,7 +135,7 @@ index 2b78a0cc3b..b6fedb5c20 100644
  #if defined(__x86_64__)
  #include "sandbox/linux/system_headers/x86_64_linux_syscalls.h"
 diff --git a/sandbox/linux/system_headers/mips64_linux_syscalls.h b/sandbox/linux/system_headers/mips64_linux_syscalls.h
-index ae7cb48f57..4ce8142a67 100644
+index 0f9ab41b6e..448351699f 100644
 --- a/sandbox/linux/system_headers/mips64_linux_syscalls.h
 +++ b/sandbox/linux/system_headers/mips64_linux_syscalls.h
 @@ -1415,4 +1415,8 @@
@@ -148,7 +148,7 @@ index ae7cb48f57..4ce8142a67 100644
 +
  #endif  // SANDBOX_LINUX_SYSTEM_HEADERS_MIPS64_LINUX_SYSCALLS_H_
 diff --git a/sandbox/linux/system_headers/mips_linux_syscalls.h b/sandbox/linux/system_headers/mips_linux_syscalls.h
-index 093778288b..f5c014e3fd 100644
+index 9664858a93..259751f93c 100644
 --- a/sandbox/linux/system_headers/mips_linux_syscalls.h
 +++ b/sandbox/linux/system_headers/mips_linux_syscalls.h
 @@ -1697,4 +1697,8 @@
@@ -161,7 +161,7 @@ index 093778288b..f5c014e3fd 100644
 +
  #endif  // SANDBOX_LINUX_SYSTEM_HEADERS_MIPS_LINUX_SYSCALLS_H_
 diff --git a/sandbox/linux/system_headers/x86_64_linux_syscalls.h b/sandbox/linux/system_headers/x86_64_linux_syscalls.h
-index e618c6237b..dc6fa8d3c7 100644
+index fe59d1ae35..37e677f7e9 100644
 --- a/sandbox/linux/system_headers/x86_64_linux_syscalls.h
 +++ b/sandbox/linux/system_headers/x86_64_linux_syscalls.h
 @@ -1438,5 +1438,9 @@
@@ -174,21 +174,3 @@ index e618c6237b..dc6fa8d3c7 100644
 +
  #endif  // SANDBOX_LINUX_SYSTEM_HEADERS_X86_64_LINUX_SYSCALLS_H_
  
-diff --git a/sandbox/policy/linux/bpf_renderer_policy_linux.cc b/sandbox/policy/linux/bpf_renderer_policy_linux.cc
-index f789e92c37..1a84c2c980 100644
---- a/sandbox/policy/linux/bpf_renderer_policy_linux.cc
-+++ b/sandbox/policy/linux/bpf_renderer_policy_linux.cc
-@@ -97,11 +97,11 @@ ResultExpr RendererProcessPolicy::EvaluateSyscall(int sysno) const {
-     case __NR_sysinfo:
-     case __NR_times:
-     case __NR_uname:
--      return Allow();
--    case __NR_sched_getaffinity:
-     case __NR_sched_getparam:
-     case __NR_sched_getscheduler:
-     case __NR_sched_setscheduler:
-+      return Allow();
-+    case __NR_sched_getaffinity:
-       return RestrictSchedTarget(GetPolicyPid(), sysno);
-     case __NR_prlimit64:
-       // See crbug.com/662450 and setrlimit comment above.
