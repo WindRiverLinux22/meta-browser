@@ -28,9 +28,11 @@ SRC_URI += " \
     file://0021-Add-missing-typename-s.patch \
     file://0022-Backport-Avoid-capturing-structured-bindings.patch \
     file://0023-Backport-IWYU-for-translate-TranslateUILanguagesMana.patch \
-    file://0024-Backport-Fix-erroneous-SupportsOstreamOperator-int-i.patch \
-    file://0025-Backport-Do-not-use-std-monospace-for-absl-variant.patch \
     file://0026-Backport-std-string-ends_with-is-C-20.-Use-base-Ends.patch \
+    file://0027-Don-t-pass-disable-auto-upgrade-debug-info-to-linker.patch \
+    file://0028-Avoid-capturing-structured-bindings.patch \
+    file://0029-Backport-IWYU-for-translate-TranslateUiLanguagesMana.patch \
+    file://0030-Backport-Avoid-operator-which-is-C-20-specific.patch \
 "
 
 SRC_URI:append:libc-musl = "\
@@ -50,6 +52,12 @@ SRC_URI:append:libc-musl = "\
     file://musl/fstatat64.patch \
     file://musl/no-res-ninit-nclose.patch \
     file://musl/fix-libc-version-include.patch \
+"
+
+# OE defines _TIME_BITS only for 32-bit ARM (ignoring architectures that we
+# don't support), see its meta/conf/distro/include/time64.inc.
+SRC_URI:append:arm = "\
+    file://0031-Fix-ARM-build-with-recent-glibc.patch \
 "
 
 ANY_OF_DISTRO_FEATURES = "opengl vulkan"
